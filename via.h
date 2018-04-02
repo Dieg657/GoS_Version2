@@ -11,6 +11,7 @@ class veiculo;
 class via
 {
 private:
+    long int id;
     int tamanho;
     unsigned int divisao;
     double velocidadeVia;
@@ -33,8 +34,9 @@ private:
     bool verificaCarroFila();
 public:
     via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao);
-    std::vector<veiculo*> *getVeiculos();
+    std::vector<veiculo*> *getVeiculosNaVia();
     std::vector<veiculo*> *getTrafegaram();
+    std::vector<veiculo *> *getVeiculosNaFila();
     void iniciarSimulacao();
     ~via();
 };

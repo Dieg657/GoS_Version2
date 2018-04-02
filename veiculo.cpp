@@ -4,9 +4,9 @@ veiculo::veiculo()
 {
 }
 
-veiculo::veiculo(int id, time_t tempoOrigem, int duracao)
+veiculo::veiculo(int idVec, time_t tempoOrigem, int duracao)
 {
-    id = id;
+    id = idVec;
     tempEspera = 0;
     tempoOrig = tempoOrigem;
     duracaoVeiculoVia = duracaoSeg = duracao;
@@ -31,8 +31,8 @@ int veiculo::getAtraso()
 void veiculo::atualizarPermanencia()
 {
     /* Diminui o tempo de permanencia na via */
-   this->duracaoSeg--;
-   cout << "Veiculo: " << id << ", ainda deve permanecer: " << duracaoSeg << endl;
+   this->duracaoSeg -= 1;
+   //cout << "Veiculo: " << id << ", ainda deve permanecer: " << duracaoSeg << endl;
 }
 
 int veiculo::getPermanenciaVia()

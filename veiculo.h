@@ -14,7 +14,7 @@ class veiculo
 public:
     time_t tempoOrig;
     veiculo();
-    veiculo(int id, time_t tempoOrigem, int duracao);
+    veiculo(int idVec, time_t tempoOrigem, int duracao);
     void adicionarAtraso();
     void setHoraSaida();
     int getAtraso();

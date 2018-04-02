@@ -8,12 +8,22 @@ using namespace std;
 
 int main()
 {
-    via *a = new via(60,500,6,1);
+    via *a = new via(60,500,6,2);
     a->iniciarSimulacao();
-    for (auto it = a->getTrafegaram()->begin(); it != a->getTrafegaram()->end(); it++) {
-            cout << "Veiculo: "<< (*it)->getID() << ", atraso de: " << (*it)->getAtraso() << endl;
-    }
 
+    cout << "Carros que trafegaram: " << a->getTrafegaram()->size() << endl;
+    cout << "Carros que ainda permanecem na via: " << a->getVeiculosNaVia()->size() << endl;
+    cout << "Carros que ainda estão na fila: " << a->getVeiculosNaFila()->size() << endl;
+
+    /*
+    time_t agora = time(NULL);
+    struct tm tempo1 = *localtime(&agora);
+    struct tm tempo2 = tempo1;
+
+    tempo2.tm_sec += 3;
+
+    cout << "Diferenca de tempo: " << difftime(mktime(&tempo2), mktime(&tempo1)) << endl;
+    */
     return 0;
 
 }
