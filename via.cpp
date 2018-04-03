@@ -16,8 +16,8 @@ void via::distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVi
 
     const int carros = 1000;  // Numero de Carros a serem gerados
 
-	const int t_vecMinutos = minutosSimulados;
-    int vetorMinutos[t_vecMinutos]={};
+    int t_vecMinutos = minutosSimulados;
+    int *vetorMinutos = new int[t_vecMinutos];
     for (int i = 0; i < minutosSimulados; i++) {
         vetorMinutos[i] = (i+1);
     }
@@ -206,19 +206,19 @@ void via::iniciarSimulacao()
             sec++; aux = difftime(mktime(&termSim),tempoAtual);
             cout << "Segundos passados: " << aux << endl;
             inserirCarroVia();
-            //cout << "Inseriu carros na via! " << endl;
             atualizarTempPermanencia();
-            //cout << "Atualizou a permanencia dos carros na via! " << endl;
             adicionarTempoAtraso();
-            //cout << "Adicionou tempo de atraso dos carros na via! " << endl;
             retirarCarroVia();
-            //cout << "Retirou carros da via! " << endl;
         }else{
             /*Não faz nada até o proximo segundo*/
         }
 
         time(&tempoAtual);
     }
+
+    /*
+     * N - Definido pela multiplicação do numero de faixas de rolamento pela quantidade de slots disponíveis na via!
+     */
 
     cout << "Carros que trafegaram: " << getTrafegaram()->size() << endl;
     cout << "Carros que ainda permanecem na via: " << getVeiculosNaVia()->size() << endl;
@@ -230,8 +230,12 @@ void via::iniciarSimulacao()
     long int veiculos = 0;
     veiculos = getTrafegaram()->size() + getVeiculosNaVia()->size();
     long double numErlangs = utilidades.erlang(veiculos,tempoSim+1,mediaTempoTrafegado());
-    cout << "Bloqueio: " << (utilidades.erlangB(faixas,numErlangs) * 100) << "%" << endl;
-    cout << "Probabilidade de espera: " << (utilidades.erlangC(faixas,numErlangs) * 100) << "%" << endl;
+    long double divisaoVias = utilidades.calcularAgentes(faixas,divisao);
+    cout << "Divisao: " << divisaoVias << endl;
+    printf("Bloqueio: %.2Lf", utilidades.erlangB(divisaoVias,numErlangs));
+    printf("Probabilidade de espera: %.2Lf\n", utilidades.erlangC(divisaoVias,numErlangs));
+    printf("Tempo medio para entrar na via: %.2Lf seg(s)\n",utilidades.ASA(divisaoVias,numErlangs,mediaTempoTrafegado()));
+    printf("O nivel de servico da via e: %.2Lf\n", utilidades.nivelServico(20,divisaoVias,numErlangs,mediaTempoTrafegado()));
 }
 
 long double via::mediaEsperaNaVia()

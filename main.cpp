@@ -8,8 +8,10 @@ using namespace std;
 
 int main()
 {
-    via *a = new via(60,500,6,1,1);
+    /*
+    via *a = new via(60,500,6,1,2);
     a->iniciarSimulacao();
+    */
 
     return 0;
 

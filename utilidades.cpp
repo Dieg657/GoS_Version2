@@ -5,30 +5,30 @@ Utilidades::Utilidades()
 
 }
 
-long double Utilidades::erlangB(long double faixas, long double erlang)
+long double Utilidades::erlangB(long double divisao, long double erlang)
 {
-    return numErlangB(faixas,erlang)/denomErlangB(faixas,erlang);
+    return numErlangB(divisao,erlang)/denomErlangB(divisao,erlang);
 }
 
-long double Utilidades::erlangC(long double faixas, long double erlang)
+long double Utilidades::erlangC(long double divisao, long double erlang)
 {
-    long double ocupacao = ocupacaoVia(erlang, faixas);
-    long double num = numErlangC(faixas,erlang);
-    long double denom = denomErlangC(faixas,erlang,num,ocupacao);
+    long double ocupacao = ocupacaoVia(erlang, divisao);
+    long double num = numErlangC(divisao,erlang);
+    long double denom = denomErlangC(divisao,erlang,num,ocupacao);
 
     return (num / denom);
 }
 
-long double Utilidades::ASA(long double faixas, long double erlang, long double tempoMedioPermanencia)
+long double Utilidades::ASA(long double divisao, long double erlang, long double tempoMedioPermanencia)
 {
-    long double res = ((erlangC(faixas,erlang) * tempoMedioPermanencia) / (faixas * (1 - ocupacaoVia(erlang,faixas))));
+    long double res = ((erlangC(divisao,erlang) * tempoMedioPermanencia) / (divisao * (1 - ocupacaoVia(erlang,divisao))));
 
     return res;
 }
 
-long double Utilidades::nivelServico(long double tempoDesejado, long double faixas, long double erlang, long double tempoMedioPermanencia)
+long double Utilidades::nivelServico(long double tempoDesejado, long double divisao, long double erlang, long double tempoMedioPermanencia)
 {
-    long double res = 1 - (erlangC(faixas,erlang) * exp(((faixas-erlang)*(tempoDesejado/tempoMedioPermanencia)) * (-1)));
+    long double res = 1 - (erlangC(divisao,erlang) * exp(((divisao-erlang)*(tempoDesejado/tempoMedioPermanencia)) * (-1)));
 
     return res;
 }
@@ -59,6 +59,11 @@ long double Utilidades::erlang(long double qtdVeiculo, long double tempoSimulaca
     return erlangNum;
 }
 
+long double Utilidades::calcularAgentes(int divisao, int slots)
+{
+    return divisao * slots;
+}
+
 long double Utilidades::fatorial(int x)
 {
     long double aux;
@@ -74,35 +79,35 @@ long double Utilidades::fatorial(int x)
     return aux;
 }
 
-long double Utilidades::numErlangB(long double faixas, long double erlang)
+long double Utilidades::numErlangB(long double divisao, long double erlang)
 {
-    long double num = pow(erlang,faixas)/fatorial(faixas);
+    long double num = pow(erlang,divisao)/fatorial(divisao);
     return num;
 }
 
-long double Utilidades::denomErlangB(long double faixas, long double erlang)
+long double Utilidades::denomErlangB(long double divisao, long double erlang)
 {
     long double somatorio = 0.0;
 
-    for (int i = 0; i <= faixas; i++) {
+    for (int i = 0; i <= divisao; i++) {
         somatorio += pow(erlang,i)/fatorial(i);
     }
 
     return somatorio;
 }
 
-long double Utilidades::numErlangC(long double faixas, long double erlang)
+long double Utilidades::numErlangC(long double divisao, long double erlang)
 {
 
-    long double num = pow(erlang,faixas)/fatorial(faixas);
+    long double num = pow(erlang,divisao)/fatorial(divisao);
     return num;
 }
 
-long double Utilidades::denomErlangC(long double faixas, long double erlang, long double numErlangC, long double ocupacaoVia)
+long double Utilidades::denomErlangC(long double divisao, long double erlang, long double numErlangC, long double ocupacaoVia)
 {
     long double somatorio = 0;
 
-    for (int i = 0; i < faixas; i++) {
+    for (int i = 0; i < divisao; i++) {
         somatorio += pow(erlang,i)/fatorial(i);
     }
 
@@ -111,8 +116,8 @@ long double Utilidades::denomErlangC(long double faixas, long double erlang, lon
     return denom;
 }
 
-long double Utilidades::ocupacaoVia(long double intensTrafego, long double faixas)
+long double Utilidades::ocupacaoVia(long double intensTrafego, long double divisao)
 {
-    return intensTrafego/faixas;
+    return intensTrafego/divisao;
 }
 
