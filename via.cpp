@@ -4,11 +4,10 @@ void via::distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVi
 {
     /*
      */
-    Utilidades * utilidades = new Utilidades();
     time_t now = time(NULL);
     struct tm tempo_carro;
-    int qtdeMinutos = 0; int * vet = NULL; // Duração dos Veiculos na Pista
-    vet = utilidades->geradorDuracaoVelocidade(velocidadeVia,comprimentoVia,&qtdeMinutos); //Carrega vetor com as informações de tempo de duração
+    int qtdeMinutos = 0; int * vet = NULL; // Duração dos veiculosVia na Pista
+    vet = utilidades.geradorDuracaoVelocidade(velocidadeVia,comprimentoVia,&qtdeMinutos); //Carrega vetor com as informações de tempo de duração
     /* Estrutura da Distribuição
      * 1º - Distribuição dos Minutos a serem simulados
      * 2º - Distribuição da duração dos veiculos na pista baseada na velocidade e comprimento da via, sendo as duas ultimas aleatórias!
@@ -58,8 +57,9 @@ void via::distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVi
     }
 }
 
-via::via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao)
+via::via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia)
 {
+    faixas = qtdeFaixasVia;
     tamanho = tamanhoViaEmMetros;
     divisao = tamanho / divisaoSlotsVia;
     velocidadeVia = velocidadeDaVia;
@@ -74,7 +74,7 @@ via::~via()
 {
     delete[] objVeiculo;
     objVeiculo = NULL;
-    veiculos.clear();
+    veiculosVia.clear();
     filaVeiculos.clear();
     trafegaram.clear();
 }
@@ -95,12 +95,22 @@ void via::inserirCarroVia()
          */
         while(verificaViaCheia() == false){
             /* Se a diferença de tempo é igual a 0, é a hora do carro "aparecer" na via */
-            if(difftime(filaVeiculos.back()->getTime(),tempoAtual) <= 0){
-                veiculos.push_back(filaVeiculos.back()); //Coloca na via
-                filaVeiculos.pop_back(); // Tira da Fila
-            }
+                tiraDaFila();
+                cout << "Inseriu carro na via!" << endl;
         }
         //cout << "Diferenca: " << difftime(tempoAtual, filaVeiculos.back()->getTime()) << ", ID: " << filaVeiculos.back()->getID() << endl;
+    }
+}
+
+void via::tiraDaFila()
+{
+    if(difftime(filaVeiculos.back()->getTime(),tempoAtual) <= 0){
+        if(verificaViaCheia()){
+            cout << "A via está cheia!" << endl;
+        }else{
+            veiculosVia.push_back(filaVeiculos.back()); //Coloca na via
+            filaVeiculos.pop_back(); // Tira da Fila
+        }
     }
 }
 
@@ -109,7 +119,7 @@ void via::atualizarTempPermanencia()
     /*
      * Atualiza o tempo de permanencia dos carros que estão usando os slots de tempo
      */
-    for (auto it = veiculos.begin(); it != veiculos.end(); it++) {
+    for (auto it = veiculosVia.begin(); it != veiculosVia.end(); it++) {
         (*it)->atualizarPermanencia();
     }
 }
@@ -117,8 +127,8 @@ void via::atualizarTempPermanencia()
 void via::adicionarTempoAtraso()
 {
     for (auto it = filaVeiculos.begin(); it != filaVeiculos.end(); it++) {
-        //if(difftime())
-        (*it)->adicionarAtraso();
+        if(difftime((*it)->getTime(),tempoAtual) < 0)
+            (*it)->adicionarAtraso();
     }
 }
 
@@ -127,15 +137,16 @@ void via::retirarCarroVia()
     /*
         Retira carro da via com o tempo de duração expirado
     */
-    if(veiculos.size() > 0){
+    int i = 0;
+    if(veiculosVia.size() > 0){
         cout << "Via com carros!" << endl;
-        for (auto it = veiculos.begin(); it != veiculos.end() && veiculos.size() > 0; it++) {
-            if((*it)->getPermanenciaVia() <= 0){
+        for (auto it = veiculosVia.begin(); it != veiculosVia.end() && veiculosVia.size() > 0; it++) {
+            if((*it)->getPermanenciaVia() < 0){
                 (*it)->setHoraSaida();
                 trafegaram.push_back((*it));
-                veiculos.pop_back();
-                cout << "Carro retirado!" << endl;
+                veiculosVia.erase(veiculosVia.begin() + i);
             }
+            i++;
         }
         cout << "Analisou retirada de carros!" << endl;
     }else{
@@ -145,7 +156,7 @@ void via::retirarCarroVia()
 
 bool via::verificaViaCheia()
 {
-    return !veiculos.empty();
+    return veiculosVia.size() == divisao;
 }
 
 bool via::verificaCarroFila()
@@ -155,7 +166,7 @@ bool via::verificaCarroFila()
 
 std::vector<veiculo *> * via::getVeiculosNaVia()
 {
-    return &veiculos;
+    return &veiculosVia;
 }
 
 std::vector<veiculo *> *via::getTrafegaram()
@@ -186,7 +197,7 @@ void via::iniciarSimulacao()
     tempoAtual = time(NULL);
     inicioSim = *localtime(&tempoAtual);
     termSim = inicioSim;
-    termSim.tm_min += tempoSim;
+    termSim.tm_min += tempoSim+1;
 
     double aux = difftime(mktime(&termSim),tempoAtual);
     int sec = 0;
@@ -195,7 +206,7 @@ void via::iniciarSimulacao()
             sec++; aux = difftime(mktime(&termSim),tempoAtual);
             cout << "Segundos passados: " << aux << endl;
             inserirCarroVia();
-            cout << "Inseriu carros na via! " << endl;
+            //cout << "Inseriu carros na via! " << endl;
             atualizarTempPermanencia();
             //cout << "Atualizou a permanencia dos carros na via! " << endl;
             adicionarTempoAtraso();
@@ -208,4 +219,63 @@ void via::iniciarSimulacao()
 
         time(&tempoAtual);
     }
+
+    cout << "Carros que trafegaram: " << getTrafegaram()->size() << endl;
+    cout << "Carros que ainda permanecem na via: " << getVeiculosNaVia()->size() << endl;
+    cout << "Carros que ainda estão na fila: " << getVeiculosNaFila()->size() << endl;
+    cout << "Media do tempo de espera: " << mediaEsperaNaVia() << " em segundos!" << endl;
+    cout << "Media do tempo trafegado na via: " << mediaTempoTrafegado() << " em segundos!" << endl;
+
+    /* Calcular Bloqueio, Probabilidade de Espera, Nível de Serviço*/
+    long int veiculos = 0;
+    veiculos = getTrafegaram()->size() + getVeiculosNaVia()->size();
+    long double numErlangs = utilidades.erlang(veiculos,tempoSim+1,mediaTempoTrafegado());
+    cout << "Bloqueio: " << (utilidades.erlangB(faixas,numErlangs) * 100) << "%" << endl;
+    cout << "Probabilidade de espera: " << (utilidades.erlangC(faixas,numErlangs) * 100) << "%" << endl;
+}
+
+long double via::mediaEsperaNaVia()
+{
+    long double espera = 0;
+    int contador = 0;
+    for (auto it = filaVeiculos.begin(); it != filaVeiculos.end(); it++) {
+        if((*it)->getAtraso() > 0){
+            espera += (*it)->getAtraso();
+        }
+        contador++;
+    }
+
+    for (auto it = veiculosVia.begin(); it != veiculosVia.end(); it++) {
+        if((*it)->getAtraso() > 0){
+            espera += (*it)->getAtraso();
+        }
+        contador++;
+    }
+
+    for (auto it = trafegaram.begin(); it != trafegaram.end(); it++) {
+        if((*it)->getAtraso() > 0){
+            espera += (*it)->getAtraso();
+        }
+        contador++;
+    }
+
+    return espera/contador;
+}
+
+long double via::mediaTempoTrafegado()
+{
+    int contador = 0;
+    long double tempoGasto = 0;
+
+    for (auto it = veiculosVia.begin(); it != veiculosVia.end(); it++) {
+        tempoGasto += (*it)->getDuracaoDoVeiculoNaVia();
+        contador++;
+    }
+
+    for (auto it = trafegaram.begin(); it != trafegaram.end(); it++) {
+        tempoGasto += (*it)->getDuracaoDoVeiculoNaVia();
+        contador++;
+    }
+
+    return tempoGasto/contador;
 }

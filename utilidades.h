@@ -19,6 +19,7 @@ public:
     long double ASA(long double faixas, long double erlang, long double tempoMedioPermanencia);
     long double nivelServico(long double tempoDesejado, long double faixas, long double erlang, long double tempoMedioPermanencia);
     int *geradorDuracaoVelocidade(int velocidade, int comprimentoVia, int *qtdeMinutos);
+    long double erlang(long double qtdVeiculo, long double tempoSimulacao, long double mediaDuracaoVeiculosVia);
 };
 
 #endif // UTILIDADES_H

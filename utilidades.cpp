@@ -50,6 +50,15 @@ int * Utilidades::geradorDuracaoVelocidade(int velocidade, int comprimentoVia, i
     return vetorMinutos;
 }
 
+long double Utilidades::erlang(long double qtdVeiculo, long double tempoSimulacao, long double mediaDuracaoVeiculosVia)
+{
+
+    long double lambda = qtdVeiculo/(tempoSimulacao*60);
+    long double erlangNum = lambda * mediaDuracaoVeiculosVia;
+
+    return erlangNum;
+}
+
 long double Utilidades::fatorial(int x)
 {
     long double aux;

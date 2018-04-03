@@ -11,33 +11,37 @@ class veiculo;
 class via
 {
 private:
-    long int id;
-    int tamanho;
-    unsigned int divisao;
-    double velocidadeVia;
-    int tempoSim;
+    long int id; //ID Veiculos
+    int tamanho; //Tamanho da Via em Metros
+    unsigned int divisao; //Divisão em Metros da Via para cada Veiculo
+    double velocidadeVia; //Velocidade em Km/H
+    int tempoSim; //Quantidade de Minutos a serem simulados
+    int faixas; //Quantidade de faixas disponíveis para tráfego na via
     time_t tempoAtual;
     struct tm inicioSim;
     struct tm termSim;
+    Utilidades utilidades;
     veiculo * objVeiculo;
-    vector<veiculo*> veiculos;
+    vector<veiculo*> veiculosVia;
     vector<veiculo*> filaVeiculos;
     vector<veiculo*> trafegaram;
     void distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVia, int comprimentoVia);
     void gerarVeiculos(int minutosSimulados, int velocidadeVia, int comprimentoVia);
     void inserirCarroVia();
-    void inserirCarroVia(int id);
+    void tiraDaFila();
     void atualizarTempPermanencia();
     void adicionarTempoAtraso();
     void retirarCarroVia();
     bool verificaViaCheia();
     bool verificaCarroFila();
 public:
-    via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao);
+    via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia);
     std::vector<veiculo*> *getVeiculosNaVia();
     std::vector<veiculo*> *getTrafegaram();
     std::vector<veiculo *> *getVeiculosNaFila();
     void iniciarSimulacao();
+    long double mediaEsperaNaVia();
+    long double mediaTempoTrafegado();
     ~via();
 };
 
