@@ -232,10 +232,10 @@ void via::iniciarSimulacao()
     long double numErlangs = utilidades.erlang(veiculos,tempoSim+1,mediaTempoTrafegado());
     long double divisaoVias = utilidades.calcularAgentes(faixas,divisao);
     cout << "Divisao: " << divisaoVias << endl;
-    printf("Bloqueio: %.2Lf", utilidades.erlangB(divisaoVias,numErlangs));
-    printf("Probabilidade de espera: %.2Lf\n", utilidades.erlangC(divisaoVias,numErlangs));
-    printf("Tempo medio para entrar na via: %.2Lf seg(s)\n",utilidades.ASA(divisaoVias,numErlangs,mediaTempoTrafegado()));
-    printf("O nivel de servico da via e: %.2Lf\n", utilidades.nivelServico(20,divisaoVias,numErlangs,mediaTempoTrafegado()));
+    //printf("Bloqueio: %.2Lf", utilidades.erlangB(divisaoVias,numErlangs));
+    //printf("Probabilidade de espera: %.2Lf\n", utilidades.erlangC(divisaoVias,numErlangs));
+    //printf("Tempo medio para entrar na via: %.2Lf seg(s)\n",utilidades.ASA(divisaoVias,numErlangs,mediaTempoTrafegado()));
+    //printf("O nivel de servico da via e: %.2Lf\n", utilidades.nivelServico(20,divisaoVias,numErlangs,mediaTempoTrafegado()));
 }
 
 long double via::mediaEsperaNaVia()

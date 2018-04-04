@@ -1,5 +1,6 @@
 #ifndef HEADER_HPP
 #define HEADER_HPP
+#include <boost/python.hpp>
 #include <iostream>
 #include <ctime>
 #include <vector>
@@ -11,6 +12,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include <string>
 
 using namespace std;
 
