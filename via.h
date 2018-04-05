@@ -15,7 +15,6 @@ private:
     int tamanho; //Tamanho da Via em Metros
     unsigned int divisao; //Divisão em Metros da Via para cada Veiculo
     double velocidadeVia; //Velocidade em Km/H
-    int tempoSim; //Quantidade de Minutos a serem simulados
     int faixas; //Quantidade de faixas disponíveis para tráfego na via
     time_t tempoAtual;
     struct tm inicioSim;
@@ -35,11 +34,13 @@ private:
     bool verificaViaCheia();
     bool verificaCarroFila();
 public:
-    via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia);
+    via();
+    void setAtributosVia(double velocidadeDaVia, int tamanhoViaEmMetros, int qtdeFaixasVia);
+    void setAtributosCarro(int divisaoSlotsVia, int tempoSimulacao);
     std::vector<veiculo*> *getVeiculosNaVia();
     std::vector<veiculo*> *getTrafegaram();
     std::vector<veiculo *> *getVeiculosNaFila();
-    void iniciarSimulacao();
+    void iniciarSimulacao(int tempoSimulacao);
     long double mediaEsperaNaVia();
     long double mediaTempoTrafegado();
     ~via();

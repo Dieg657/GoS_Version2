@@ -54,7 +54,7 @@ PyC::PyC()
         "def ocupacaoVia(E, M):                                             \n"\
         "    return (E/M) * 100                                             \n"\
         "                                                                   \n"\
-        "def faixasRequeridas(M, Fator):                                     \n"\
+        "def faixasRequeridas(M, Fator):                                    \n"\
         "    return (M/(1 - (Fator/100)))                                   \n"\
         "                                                                   \n"\
         "def nivelServico(B, M , E, ANT, MediaDuracao):                     \n"\

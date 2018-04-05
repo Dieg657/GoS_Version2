@@ -12,13 +12,6 @@ long double Utilidades::ASA(long double divisao, long double erlang, long double
     return res;
 }
 
-long double Utilidades::nivelServico(long double tempoDesejado, long double divisao, long double erlang, long double tempoMedioPermanencia, double erlangC)
-{
-    long double res = 1 - (erlangC * exp(((divisao-erlang)*(tempoDesejado/tempoMedioPermanencia)) * (-1)));
-
-    return res;
-}
-
 int * Utilidades::geradorDuracaoVelocidade(int velocidade, int comprimentoVia, int * qtdeMinutos)
 {
     int k = 0;
@@ -65,9 +58,3 @@ long double Utilidades::fatorial(int x)
     }
     return aux;
 }
-
-long double Utilidades::ocupacaoVia(long double intensTrafego, long double divisao)
-{
-    return intensTrafego/divisao;
-}
-

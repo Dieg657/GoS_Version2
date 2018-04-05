@@ -5,9 +5,6 @@
 class Utilidades
 {
 private:
-
-    long double numErlangC(long double divisao, long double erlang);
-    long double denomErlangC(long double divisao, long double erlang, long double numErlangC);
     long double ocupacaoVia(long double intensTrafego, long double divisao);
     void distribuicaoPoissonEExponencial(int *id, int minutosSimulados, int velocidadeVia, int comprimentoVia);
 public:

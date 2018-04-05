@@ -57,16 +57,9 @@ void via::distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVi
     }
 }
 
-via::via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia)
-{
-    faixas = qtdeFaixasVia;
-    tamanho = tamanhoViaEmMetros;
-    divisao = tamanho / divisaoSlotsVia;
-    velocidadeVia = velocidadeDaVia;
-    tempoSim = tempoSimulacao;
-    objVeiculo = NULL;
-    id = 0;
-    tempoAtual = time(NULL);
+via::via()
+{   
+
 }
 
 
@@ -164,6 +157,20 @@ bool via::verificaCarroFila()
     return filaVeiculos.size() > 0;
 }
 
+void via::setAtributosVia(double velocidadeDaVia, int tamanhoViaEmMetros, int qtdeFaixasVia)
+{
+    faixas = qtdeFaixasVia;
+    tamanho = tamanhoViaEmMetros;
+    velocidadeVia = velocidadeDaVia;
+}
+
+void via::setAtributosCarro(int divisaoSlotsVia, int tempoSimulacao)
+{
+    objVeiculo = NULL;
+    id = 0;
+    divisao = tamanho / divisaoSlotsVia;
+}
+
 std::vector<veiculo *> * via::getVeiculosNaVia()
 {
     return &veiculosVia;
@@ -185,13 +192,13 @@ void via::gerarVeiculos(int minutosSimulados, int velocidadeVia, int comprimento
     sort(filaVeiculos.begin(),filaVeiculos.end(),[](const veiculo *a, const veiculo *b){return difftime(a->tempoOrig, b->tempoOrig) > 0.0;});
 }
 
-void via::iniciarSimulacao()
+void via::iniciarSimulacao(int tempoSimulacao)
 {
     /*
      * Gerar os carros
      */
 
-    gerarVeiculos(tempoSim,velocidadeVia,tamanho);
+    gerarVeiculos(tempoSimulacao,velocidadeVia,tamanho);
     cout << "Gerou os carros! " << endl;
 
     tempoAtual = time(NULL);
