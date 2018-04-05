@@ -132,3 +132,71 @@ printf ("%.f seconds", seconds);
       }
     }
 */
+
+/*
+    Py_Initialize();
+    PyObject *moduleMainString = PyString_FromString("__main__");
+    PyObject *moduleMain = PyImport_Import(moduleMainString);
+
+    PyRun_SimpleString(
+        "import math                                                        \n"\
+        "def mul(a, b):                                                     \n"\
+        "   return a * b                                                    \n"\
+        "                                                                   \n"\
+        "def erlangB(E, M):                                                 \n"\
+        "   InversoProbBloqueio = 1.0                                       \n"\
+        "   for i in range(1, M):                                           \n"\
+        "       InversoProbBloqueio = 1.0 + ((i / E) * InversoProbBloqueio) \n"\
+        "   Bloqueio = 1.0 / InversoProbBloqueio                            \n"\
+        "   return Bloqueio * 100                                           \n"\
+        "                                                                   \n"\
+        "def erlangC(E, M):                                                 \n"\
+        "    ePower = E**M                                                  \n"\
+        "    mFactorial = math.factorial(M)                                 \n"\
+        "    X = ePower / mFactorial * (M/(M-E))                            \n"\
+        "    print('Entrou no Python')                                       \n"\
+        "    Y = 0                                                          \n"\
+        "    for i in range(0, M):                                          \n"\
+        "        a = E**i                                                   \n"\
+        "        b = math.factorial(i)                                      \n"\
+        "        Y = Y + (a/b)                                              \n"\
+        "    return (X / ((X+Y))) * 100                                     \n"\
+        "                                                                   \n"\
+        "def ocupacaoVia(E, M):                                             \n"\
+        "    return (E/M) * 100                                             \n"\
+        "                                                                   \n"\
+        "def faixasRequeridas(M, Fator):                                     \n"\
+        "    return (M/(1 - (Fator/100)))                                   \n"\
+        "                                                                   \n"\
+        "def nivelServico(B, M , E, ANT, MediaDuracao):                     \n"\
+        "    C = -((M-E) * ANT/MediaDuracao)                                \n"\
+        "    C = math.pow(math.e, C)                                        \n"\
+        "    Resultado = 1 - (B * C)                                        \n"\
+        "    return Resultado * 100                                         \n"\
+    );
+
+    PyObject *func = PyObject_GetAttrString(moduleMain, "erlangB");
+    PyObject *args = PyTuple_Pack(2, PyFloat_FromDouble(80), PyLong_FromDouble(60));
+
+    PyObject *result = PyObject_CallObject(func, args);
+
+    double a = PyFloat_AsDouble(result);
+
+    cout << PyFloat_AsDouble(result) << endl;
+
+    Py_DECREF(func);
+    Py_DECREF(args);
+    Py_DECREF(result);
+
+    func = PyObject_GetAttrString(moduleMain, "erlangC");
+    args = PyTuple_Pack(2, PyFloat_FromDouble(48), PyLong_FromDouble(55));
+
+    result = PyObject_CallObject(func, args);
+
+    cout << PyFloat_AsDouble(result) << endl;
+    double b = PyFloat_AsDouble(result);
+
+    printf("Percentual de Bloqueio: %.1f \n",a);
+    printf("Probabilidade de espera: %.1f \n",b);
+    Py_Finalize();
+*/

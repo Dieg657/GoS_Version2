@@ -14,8 +14,6 @@ void via::distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVi
      * 3º - Distribuição dos Segundos de origem.
     */
 
-    const int carros = 1000;  // Numero de Carros a serem gerados
-
 	const int t_vecMinutos = minutosSimulados;
     int vetorMinutos[t_vecMinutos]={};
     for (int i = 0; i < minutosSimulados; i++) {
@@ -57,13 +55,14 @@ void via::distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVi
     }
 }
 
-via::via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia)
+via::via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia, int carros)
 {
     faixas = qtdeFaixasVia;
     tamanho = tamanhoViaEmMetros;
     divisao = tamanho / divisaoSlotsVia;
     velocidadeVia = velocidadeDaVia;
     tempoSim = tempoSimulacao;
+    this->carros = carros;
     objVeiculo = NULL;
     id = 0;
     tempoAtual = time(NULL);

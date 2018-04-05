@@ -17,6 +17,12 @@ private:
     double velocidadeVia; //Velocidade em Km/H
     int tempoSim; //Quantidade de Minutos a serem simulados
     int faixas; //Quantidade de faixas disponíveis para tráfego na via
+    int carros;
+
+    vector<int> minutosGrafico;
+    vector<int> segundosGrafico;
+    vector<int> duracaoGrafico;
+
     time_t tempoAtual;
     struct tm inicioSim;
     struct tm termSim;
@@ -35,7 +41,7 @@ private:
     bool verificaViaCheia();
     bool verificaCarroFila();
 public:
-    via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia);
+    via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia, int carros);
     std::vector<veiculo*> *getVeiculosNaVia();
     std::vector<veiculo*> *getTrafegaram();
     std::vector<veiculo *> *getVeiculosNaFila();

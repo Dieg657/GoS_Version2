@@ -13,4 +13,12 @@ HEADERS += \
     veiculo.h \
     via.h \
     header.hpp \
-    utilidades.h
+    utilidades.h \
+    pycalculos.h
+
+unix:LIBS += -L /lib/python2.7 -lpython2.7
+unix:INCLUDEPATH += /usr/include/python2.7
+unix:DEPENDPATH += /usr/include/python2.7
+
+DISTFILES += \
+    utilidades.py
