@@ -22,3 +22,4 @@ unix:DEPENDPATH += /usr/include/python2.7
 
 DISTFILES += \
     utilidades.py
+
