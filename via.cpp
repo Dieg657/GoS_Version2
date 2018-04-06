@@ -6,26 +6,27 @@ void via::distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVi
      */
     time_t now = time(NULL);
     struct tm tempo_carro;
-    int qtdeMinutos = 0; int * vet = NULL; // Duração dos veiculosVia na Pista
+    int qtdeMinutos = 0; // Duração dos veiculosVia na Pista
     vet = utilidades.geradorDuracaoVelocidade(velocidadeVia,comprimentoVia,&qtdeMinutos); //Carrega vetor com as informações de tempo de duração
+
     /* Estrutura da Distribuição
      * 1º - Distribuição dos Minutos a serem simulados
      * 2º - Distribuição da duração dos veiculos na pista baseada na velocidade e comprimento da via, sendo as duas ultimas aleatórias!
      * 3º - Distribuição dos Segundos de origem.
     */
 
-    const int carros = 1000;  // Numero de Carros a serem gerados
 
-    int t_vecMinutos = minutosSimulados;
+    const int t_vecMinutos = minutosSimulados;
     int *vetorMinutos = new int[t_vecMinutos];
 
     for (int i = 0; i < minutosSimulados; i++) {
         vetorMinutos[i] = (i+1);
+        minutoGrafico[(i+1)] = 0;
     }
 
     /* Tempo Origem - Minuto */
     std::default_random_engine geradorMinuto;
-    std::exponential_distribution<double> distribuicaoMinuto((minutosSimulados)/2);
+    std::poisson_distribution<int> distribuicaoMinuto(minutosSimulados);
     /* Tempo Origem - Segundo */
     std::default_random_engine geradorSegundo;
     std::poisson_distribution<int> distribuicaoSegundo(20); //Media de 20 segundos para aparecer na via
@@ -40,32 +41,43 @@ void via::distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVi
       int segundo = distribuicaoSegundo(geradorSegundo);
       double duracaoNaVia = distribuicaoDuracaoTempoVia(geradorDuracaoTempoVia);
 
-      if (minuto < 1.0) { // Menor que 100% do tempo de circulação
+
+
+      if (minuto < minutosSimulados) { // Menor que 100% do tempo de circulação
           //cout << "Posição do vetor: " << int(minutosSimulados*minuto) << ", minuto gerado: " << vetorMinutos[int(minutosSimulados*minuto)] << endl;
-          tempo_carro.tm_min += vetorMinutos[int(minutosSimulados*minuto)];
+          tempo_carro.tm_min += vetorMinutos[int(minuto)];
+
+          minutoGrafico[minuto] += 1;
+
+          //cout << "Minuto: " << minuto+1 << ", vezes: " << minutoGrafico[minuto] << endl;
       }
 
       if(segundo < 60){// Menor que 60 segundos
           //cout << "Segundo gerado:" << segundo << endl;
           tempo_carro.tm_sec += segundo;
+          segundosGrafico[segundo] += 1;
+          //cout << "Segundo: " << segundo << ", vezes: " << segundosGrafico[segundo] << endl;
       }
 
-      if(duracaoNaVia < qtdeMinutos){
+      if(duracaoNaVia < qtdeMinutos){ 
           objVeiculo = new veiculo(id,mktime(&tempo_carro),vet[int(duracaoNaVia)]);
+          duracaoGrafico[duracaoNaVia] += 1;
           filaVeiculos.push_back(objVeiculo);
           id += 1;
       }
     }
 }
 
-via::via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia, int carros)
+via::via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia, int qtdCarros)
 {
+    vet = nullptr;
+    vetAux = nullptr;
     faixas = qtdeFaixasVia;
     tamanho = tamanhoViaEmMetros;
     divisao = tamanho / divisaoSlotsVia;
     velocidadeVia = velocidadeDaVia;
     tempoSim = tempoSimulacao;
-    this->carros = carros;
+    this->carros = qtdCarros;
     objVeiculo = NULL;
     id = 0;
     tempoAtual = time(NULL);
@@ -192,14 +204,14 @@ void via::iniciarSimulacao(int tempoSimulacao)
     /*
      * Gerar os carros
      */
-
+    tempoSim = tempoSimulacao;
     gerarVeiculos(tempoSimulacao,velocidadeVia,tamanho);
     cout << "Gerou os carros! " << endl;
 
     tempoAtual = time(NULL);
     inicioSim = *localtime(&tempoAtual);
     termSim = inicioSim;
-    termSim.tm_min += tempoSimulacao+1;
+    termSim.tm_min += tempoSimulacao;
 
     double aux = difftime(mktime(&termSim),tempoAtual);
     int sec = 0;
@@ -212,11 +224,15 @@ void via::iniciarSimulacao(int tempoSimulacao)
             adicionarTempoAtraso();
             retirarCarroVia();
         }else{
-            /*Não faz nada até o proximo segundo*/
+
         }
 
         time(&tempoAtual);
     }
+
+    duracaoGraf();
+    minutosGraf();
+    segsGraf();
 
     /*
      * N - Definido pela multiplicação do numero de faixas de rolamento pela quantidade de slots disponíveis na via!
@@ -228,16 +244,18 @@ void via::iniciarSimulacao(int tempoSimulacao)
     cout << "Media do tempo de espera: " << mediaEsperaNaVia() << " em segundos!" << endl;
     cout << "Media do tempo trafegado na via: " << mediaTempoTrafegado() << " em segundos!" << endl;
 
+
     /* Calcular Bloqueio, Probabilidade de Espera, Nível de Serviço*/
     long int veiculos = 0;
     veiculos = getTrafegaram()->size() + getVeiculosNaVia()->size();
-    long double numErlangs = utilidades.erlang(veiculos,tempoSim+1,mediaTempoTrafegado());
+    long double numErlangs = utilidades.erlang(veiculos,tempoSim,mediaTempoTrafegado());
     long double divisaoVias = utilidades.calcularAgentes(faixas,divisao);
-    cout << "Divisao: " << divisaoVias << endl;
-    //printf("Bloqueio: %.2Lf", utilidades.erlangB(divisaoVias,numErlangs));
-    //printf("Probabilidade de espera: %.2Lf\n", utilidades.erlangC(divisaoVias,numErlangs));
-    //printf("Tempo medio para entrar na via: %.2Lf seg(s)\n",utilidades.ASA(divisaoVias,numErlangs,mediaTempoTrafegado()));
-    //printf("O nivel de servico da via e: %.2Lf\n", utilidades.nivelServico(20,divisaoVias,numErlangs,mediaTempoTrafegado()));
+    cout << "Erlangs: " << numErlangs << endl;
+    cout << "Num. Div. da Via: " << divisaoVias << endl;
+    cout << "Bloqueio: " << python.calcularBloqueio(numErlangs,divisaoVias) << "%" << endl;
+    cout << "Prob. de Espera: " << python.calcularProbEspera(numErlangs,divisaoVias) << "%" << endl;
+    cout << "Ocupação da Via: " << python.calcularOcupacaoVia(numErlangs,divisaoVias) << "%" << endl;
+    cout << "Nível de Serviço (GoS): " << python.nivelServico(python.calcularBloqueio(numErlangs,divisaoVias),numErlangs,divisaoVias,15,60) << "%" << endl;
 }
 
 long double via::mediaEsperaNaVia()
@@ -284,4 +302,43 @@ long double via::mediaTempoTrafegado()
     }
 
     return tempoGasto/contador;
+}
+
+void via::minutosGraf()
+{
+    ofstream minuto("minuto.csv");
+    const char *bom = "\xef\xbb\xbf";
+    minuto << bom;
+    minuto << "Minuto (Em que irá aparecer) ; Vezes de selecionado" << endl;
+    for (int i = 0; i < tempoSim; i++) {
+        minuto << i+1 << " ; " << minutoGrafico[i] << endl;
+    }
+    minuto.close();
+
+}
+
+void via::segsGraf()
+{
+    ofstream segundo("segundo.csv");
+    const char *bom = "\xef\xbb\xbf";
+    segundo << bom;
+    segundo << "Segundo (Em que irá aparecer) ; Vezes de selecionado" << endl;
+    for (int i = 1; i < 60; i++) {
+        segundo << i << " ; " << segundosGrafico[i] << endl;
+    }
+    segundo.close();
+}
+
+void via::duracaoGraf()
+{
+    int k = 0;
+    ofstream duracao("duracao.csv");
+    const char *bom = "\xef\xbb\xbf";
+    duracao << bom;
+    duracao << "Duração (Em segundos) ; Vezes de selecionado" << endl;
+    for (int i = velocidadeVia - (velocidadeVia *0.1); i <= velocidadeVia + (velocidadeVia * 0.10); i++) {
+        duracao << i << " ; " << duracaoGrafico[k] << endl;
+        k++;
+    }
+    duracao.close();
 }

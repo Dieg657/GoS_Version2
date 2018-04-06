@@ -17,6 +17,7 @@ public:
     int *geradorDuracaoVelocidade(int velocidade, int comprimentoVia, int *qtdeMinutos);
     long double erlang(long double qtdVeiculo, long double tempoSimulacao, long double mediaDuracaoVeiculosVia);
     long double calcularAgentes(int divisao, int slots);
+
 };
 
 #endif // UTILIDADES_H

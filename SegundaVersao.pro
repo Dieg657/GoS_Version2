@@ -7,7 +7,8 @@ SOURCES += main.cpp \
     veiculo.cpp \
     via.cpp \
     anotacoes.cpp \
-    utilidades.cpp
+    utilidades.cpp \
+    pycalculos.cpp
 
 HEADERS += \
     veiculo.h \

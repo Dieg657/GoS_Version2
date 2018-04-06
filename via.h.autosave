@@ -11,9 +11,6 @@ class veiculo;
 class via
 {
 private:
-    PyC python;
-    int * vet;
-    int * vetAux;
     long int id; //ID Veiculos
     int tamanho; //Tamanho da Via em Metros
     unsigned int divisao; //Divisão em Metros da Via para cada Veiculo
@@ -22,10 +19,10 @@ private:
     int carros;
     int tempoSim;
     /* Obter os dados para gerar os Gráficos no Excel */
-    map<int,int> minutoGrafico;
-    map<int,int> segundosGrafico;
-    map<int,int> duracaoGrafico;
-
+    vector<int> minutosGrafico;
+    vector<int> segundosGrafico;
+    vector<int> duracaoGrafico;
+    
     time_t tempoAtual;
     struct tm inicioSim;
     struct tm termSim;
@@ -44,16 +41,13 @@ private:
     bool verificaViaCheia();
     bool verificaCarroFila();
 public:
-    via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia, int qtdCarros);
+    via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, int tempoSimulacao, int qtdeFaixasVia, int carros);
     std::vector<veiculo*> *getVeiculosNaVia();
     std::vector<veiculo*> *getTrafegaram();
     std::vector<veiculo *> *getVeiculosNaFila();
     void iniciarSimulacao(int tempoSimulacao);
     long double mediaEsperaNaVia();
     long double mediaTempoTrafegado();
-    void minutosGraf();
-    void segsGraf();
-    void duracaoGraf();
     ~via();
 };
 

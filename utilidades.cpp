@@ -5,7 +5,7 @@ Utilidades::Utilidades()
 
 }
 
-int * Utilidades::geradorDuracaoVelocidade(int velocidade, int comprimentoVia, int * qtdeMinutos)
+int *Utilidades::geradorDuracaoVelocidade(int velocidade, int comprimentoVia, int *qtdeMinutos)
 {
     int k = 0;
     for (int i = (velocidade - (velocidade*0.1)); i <= (velocidade + (velocidade*0.1)); i++) {
@@ -35,6 +35,7 @@ long double Utilidades::calcularAgentes(int divisao, int slots)
 {
     return divisao * slots;
 }
+
 
 long double Utilidades::fatorial(int x)
 {
