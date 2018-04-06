@@ -34,7 +34,7 @@ void via::distribuicaoPoissonEExponencial(int minutosSimulados, int velocidadeVi
     default_random_engine geradorDuracaoTempoVia;
     exponential_distribution<double> distribuicaoDuracaoTempoVia(0.5); //Duração dos carros está entre 50% do tempo de circulação
 
-    for (long int i=0; i<carros; i++) {
+    for (int i=0; i<carros; i++) {
       tempo_carro = *localtime(&now);
       tempo_carro.tm_sec = 0;
       double minuto = distribuicaoMinuto(geradorMinuto);
@@ -77,7 +77,7 @@ via::via(double velocidadeDaVia, int tamanhoViaEmMetros, int divisaoSlotsVia, in
     divisao = tamanho / divisaoSlotsVia;
     velocidadeVia = velocidadeDaVia;
     tempoSim = tempoSimulacao;
-    this->carros = qtdCarros;
+    carros = qtdCarros;
     objVeiculo = NULL;
     id = 0;
     tempoAtual = time(NULL);
@@ -246,10 +246,10 @@ void via::iniciarSimulacao(int tempoSimulacao)
 
 
     /* Calcular Bloqueio, Probabilidade de Espera, Nível de Serviço*/
-    long int veiculos = 0;
+    int veiculos = 0;
     veiculos = getTrafegaram()->size() + getVeiculosNaVia()->size();
-    long double numErlangs = utilidades.erlang(veiculos,tempoSim,mediaTempoTrafegado());
-    long double divisaoVias = utilidades.calcularAgentes(faixas,divisao);
+    double numErlangs = python.erlang(veiculos,tempoSim,mediaTempoTrafegado());
+    double divisaoVias = utilidades.calcularAgentes(faixas,divisao);
     cout << "Erlangs: " << numErlangs << endl;
     cout << "Num. Div. da Via: " << divisaoVias << endl;
     cout << "Bloqueio: " << python.calcularBloqueio(numErlangs,divisaoVias) << "%" << endl;

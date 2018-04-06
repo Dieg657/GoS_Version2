@@ -38,6 +38,11 @@ PyC::PyC()
         "    C = math.pow(math.e, C)                                        \n"\
         "    Resultado = 1 - (B * C)                                        \n"\
         "    return Resultado * 100                                         \n"\
+        "                                                                   \n"\
+        "def erlang(C, T, Med):                                             \n"\
+        "    X = (C/(T*60))                                                 \n"\
+        "    X = X / Med                                                    \n"\
+        "    return X                                                       \n"\
     );
 }
 
@@ -46,6 +51,16 @@ void PyC::desalocarPy()
     Py_DECREF(func);
     Py_DECREF(args);
     Py_DECREF(result);
+}
+
+double PyC::erlang(int qtdCarro, int tempoSim, long double medVec)
+{
+    PyObject *func = PyObject_GetAttrString(moduleMain, "erlang");
+    PyObject *args = PyTuple_Pack(3, PyLong_FromLong(qtdCarro), PyLong_FromLong(tempoSim), PyFloat_FromDouble(medVec));
+
+    PyObject *result = PyObject_CallObject(func, args);
+
+    return PyFloat_AsDouble(result);
 }
 
 double PyC::calcularBloqueio(double erlang, long slot)

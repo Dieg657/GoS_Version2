@@ -22,18 +22,9 @@ int *Utilidades::geradorDuracaoVelocidade(int velocidade, int comprimentoVia, in
     return vetorMinutos;
 }
 
-long double Utilidades::erlang(long double qtdVeiculo, long double tempoSimulacao, long double mediaDuracaoVeiculosVia)
+long int Utilidades::calcularAgentes(int divisao, int slot)
 {
-
-    long double lambda = qtdVeiculo/(tempoSimulacao*60);
-    long double erlangNum = lambda * mediaDuracaoVeiculosVia;
-
-    return erlangNum;
-}
-
-long double Utilidades::calcularAgentes(int divisao, int slots)
-{
-    return divisao * slots;
+    return divisao * slot;
 }
 
 

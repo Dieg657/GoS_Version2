@@ -13,6 +13,7 @@ private:
 public:
     PyC();
     void desalocarPy();
+    double erlang(int qtdCarro, int tempoSim, long double medVec);
     double calcularBloqueio(double erlang, long slot);
     double calcularProbEspera(double erlang, long slot);
     double calcularOcupacaoVia(double erlang, long slot);
